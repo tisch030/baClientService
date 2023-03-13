@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="de"
+	  xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="https://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<head>
+		<title>OIDC Create</title>
+	</head>
+
+	<body sec:authorize="isAuthenticated()">
+
+		<div style="display: flex; align-items: center; justify-content: space-between;">
+			<h3 style="margin-left: 50px;">Willkommen bei CompanyX - Ihrem Campus-Management-System</h3>
+
+			<div style="display: flex;">
+				<a href="/index">Startseite</a>
+				<a href="/identity-provider" style="margin-left: 50px;">IDP Übersicht</a>
+				<a href="/logs" style="margin-left: 50px;">Authentifizierungsprotokoll Übersicht</a>
+			</div>
+
+			<form class="form-logout" method="get" th:action="@{/single-logout}" style="margin-right: 50px;">
+				<button type="submit">Abmelden</button>
+			</form>
+		</div>
+
+		<div style="display: flex; align-items: center; flex-direction: column;">
+			<h5>OIDC Identity-Provider</h5>
+
+			<div id="errors"
+				 style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+				<span th:text="${error}" style="color: red; font-size: larger;"></span>
+				<span th:if="${error}" style="color: red; font-size: larger;">No updates executed!</span>
+			</div>
+
+			<form id="form-oidc-create" method="post"
+				  th:action="@{/identity-provider/oidc/create}">
+
+				<label for="name">Identity Provider Name</label><br>
+				<input type="text" id="name" name="name" required><br>
+
+				<label for="unique-attribute">Eindeutiges Zuordnungsattribut</label><br>
+				<input type="text" id="unique-attribute" name="unique-attribute" required><br>
+
+				<label for="position">Position</label><br>
+				<input type="number" id="position" name="position" required><br>
+
+				<label for="button-text">Button Text</label><br>
+				<input type="text" id="button-text" name="button-text" required><br>
+
+				<label for="client-id">Client-ID</label><br>
+				<input type="text" id="client-id" name="client-id" required><br>
+
+				<label for="client-secret">Client-Secret</label><br>
+				<input type="text" id="client-secret" name="client-secret" required><br>
+
+				<label for="scopes">Scopes</label><br>
+				<input type="text" id="scopes" name="scopes" required><br>
+
+				<label for="discovery">Discovery Mechanismus</label><br>
+				<input type="checkbox" id="discovery" name="discovery"><br>
+
+				<label for="issuer-url">Issuer-URL</label><br>
+				<input type="text" id="issuer-url" name="issuer-url" required><br>
+
+				<label for="authorization-url">Authorization-URL</label><br>
+				<input type="text" id="authorization-url" name="authorization-url" required><br>
+
+				<label for="jwks-url">JWKS-URL</label><br>
+				<input type="text" id="jwks-url" name="jwks-url" required><br>
+
+				<label for="token-url">Token-URL</label><br>
+				<input type="text" id="token-url" name="token-url" required><br>
+
+				<label for="user-info-url">User-Info-URL</label><br>
+				<input type="text" id="user-info-url" name="user-info-url" required><br>
+
+				<button type="submit">Erstellen</button>
+			</form>
+		</div>
+
+		<script>
+            document.body.onload = init;
+
+            function init() {
+                dontUseDiscovery();
+                const useDiscoveryCheckBox = document.getElementById('discovery');
+                useDiscoveryCheckBox.addEventListener('change', e => {
+                    if (e.target.checked === true) {
+                        useDiscovery();
+                    }
+                    if (e.target.checked === false) {
+                        dontUseDiscovery();
+                    }
+                });
+            }
+
+            function useDiscovery() {
+                const issuerUrlInput = document.getElementById("issuer-url");
+                const authorizationUrlInput = document.getElementById("authorization-url");
+                const jwksUrlInput = document.getElementById("jwks-url");
+                const tokenUrlInput = document.getElementById("token-url");
+                const userInfoUrlInput = document.getElementById("user-info-url");
+
+                issuerUrlInput.setAttribute("type", "text");
+                authorizationUrlInput.setAttribute("type", "hidden");
+                jwksUrlInput.setAttribute("type", "hidden");
+                tokenUrlInput.setAttribute("type", "hidden");
+                userInfoUrlInput.setAttribute("type", "hidden");
+            }
+
+            function dontUseDiscovery() {
+                const issuerUrlInput = document.getElementById("issuer-url");
+                const authorizationUrlInput = document.getElementById("authorization-url");
+                const jwksUrlInput = document.getElementById("jwks-url");
+                const tokenUrlInput = document.getElementById("token-url");
+                const userInfoUrlInput = document.getElementById("user-info-url");
+
+                issuerUrlInput.setAttribute("type", "hidden");
+                authorizationUrlInput.setAttribute("type", "text");
+                jwksUrlInput.setAttribute("type", "text");
+                tokenUrlInput.setAttribute("type", "text");
+                userInfoUrlInput.setAttribute("type", "text");
+            }
+
+		</script>
+	</body>
+</html>

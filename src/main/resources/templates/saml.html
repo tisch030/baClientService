@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="de"
+	  xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="https://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<head>
+		<title>SAML Overview</title>
+	</head>
+
+	<body sec:authorize="isAuthenticated()">
+
+		<div style="display: flex; align-items: center; justify-content: space-between;">
+			<h3 style="margin-left: 50px;">Willkommen bei CompanyX - Ihrem Campus-Management-System</h3>
+
+			<div style="display: flex;">
+				<a href="/index">Startseite</a>
+				<a href="/identity-provider" style="margin-left: 50px;">IDP Übersicht</a>
+				<a href="/logs" style="margin-left: 50px;">Authentifizierungsprotokoll Übersicht</a>
+			</div>
+
+			<form class="form-logout" method="get" th:action="@{/single-logout}" style="margin-right: 50px;">
+				<button type="submit">Abmelden</button>
+			</form>
+		</div>
+
+
+		<divstyle="display: flex; justify-content: center; flex-wrap: wrap;">
+
+			<div id="idpBasic" style="margin-right: 50px;">
+				<h5>Identity-Provider</h5>
+				<table style=" margin-right: auto; margin-left: auto;">
+					<tbody>
+						<tr>
+							<td>ID</td>
+							<td th:text="${samlProvider.identityProvider.id}"></td>
+						</tr>
+						<tr>
+							<td>Name</td>
+							<td th:text="${samlProvider.identityProvider.name}"></td>
+						</tr>
+						<tr>
+							<td>Eindeutiges Zuordnungsattribut</td>
+							<td th:text="${samlProvider.identityProvider.uniqueIdentifierAttributeAtIdp}"></td>
+						</tr>
+						<tr>
+							<td>Aktiviert</td>
+							<td th:text="${samlProvider.identityProvider.enabled}"></td>
+						</tr>
+						<tr>
+							<td>Typ</td>
+							<td th:text="${samlProvider.identityProvider.identityProviderType}"></td>
+						</tr>
+						<tr>
+							<td>Position</td>
+							<td th:text="${samlProvider.identityProvider.position}"></td>
+						</tr>
+						<tr>
+							<td>Button Text</td>
+							<td th:text="${samlProvider.identityProvider.buttonLabel}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div id="samlSettings">
+				<h5>SAML Settings</h5>
+				<table style=" margin-right: auto; margin-left: auto;">
+					<tbody>
+						<tr>
+							<td>Issuer-URL</td>
+							<td th:text="${samlProvider.samlSettings.issuerUrl}"></td>
+						</tr>
+						<tr>
+							<td>STORK-QAA-Level</td>
+							<td th:text="${samlProvider.samlSettings.storkQaaLevel}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div id="samlServiceProviderInformation">
+				<h5>SAML Service Provider Information</h5>
+				<table style=" margin-right: auto; margin-left: auto;">
+					<tbody>
+						<tr>
+							<td>Entity-ID</td>
+							<td th:text="${samlProvider.samlServiceProviderInformationUi.entityId} + ${samlProvider.identityProvider.name}"></td>
+						</tr>
+						<tr>
+							<td>IDP initiierter Abmelde Endpunkt</td>
+							<td th:text="${samlProvider.samlServiceProviderInformationUi.idpInitiatedLogoutEndpoint}"></td>
+						</tr>
+						<tr>
+							<td>X509 Zertifikat</td>
+							<td th:text="${samlProvider.samlServiceProviderInformationUi.x509certificate}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<form class="form-update-saml" method="get"
+			  th:action="@{/identity-provider/saml/update/} + ${samlProvider.identityProvider.id}"
+			  style="display: flex; justify-content: center;">
+			<button type="submit">Aktualisieren</button>
+		</form>
+	</body>
+	<style>
+        td {
+            padding-right: 55px;
+            padding-bottom: 5px;
+        }
+	</style>
+</html>

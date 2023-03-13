@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="de"
+	  xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="https://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<head>
+		<title>SAML Update</title>
+	</head>
+
+	<body sec:authorize="isAuthenticated()">
+
+		<div style="display: flex; align-items: center; justify-content: space-between;">
+			<h3 style="margin-left: 50px;">Willkommen bei CompanyX - Ihrem Campus-Management-System</h3>
+
+			<div style="display: flex;">
+				<a href="/index">Startseite</a>
+				<a href="/identity-provider" style="margin-left: 50px;">IDP Übersicht</a>
+				<a href="/logs" style="margin-left: 50px;">Authentifizierungsprotokoll Übersicht</a>
+			</div>
+
+			<form class="form-logout" method="get" th:action="@{/single-logout}" style="margin-right: 50px;">
+				<button type="submit">Abmelden</button>
+			</form>
+		</div>
+
+		<div style="display: flex; align-items: center; flex-direction: column;">
+			<h5>SAML Identity-Provider</h5>
+
+			<div id="errors"
+				 style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+				<span th:text="${error}" style="color: red; font-size: larger;"></span>
+				<span th:if="${error}" style="color: red; font-size: larger;">No updates executed!</span>
+			</div>
+
+			<form id="form-saml-update" method="post"
+				  th:action="@{/identity-provider/saml/update/} + ${samlProvider.identityProvider.id}">
+
+				<label for="name">Identity Provider Name</label><br>
+				<input type="text" id="name" name="name"
+					   th:value="${samlProvider.identityProvider.name}" required><br>
+
+				<label for="unique-attribute">Eindeutiges Zuordnungsattribut</label><br>
+				<input type="text" id="unique-attribute" name="unique-attribute"
+					   th:value="${samlProvider.identityProvider.uniqueIdentifierAttributeAtIdp}" required><br>
+
+				<label for="position">Position</label><br>
+				<input type="number" id="position" name="position"
+					   th:value="${samlProvider.identityProvider.position}" required><br>
+
+				<label for="button-text">Button Text</label><br>
+				<input type="text" id="button-text" name="button-text"
+					   th:value="${samlProvider.identityProvider.buttonLabel}" required><br>
+
+				<label for="issuer-url">Issuer-URL</label><br>
+				<input type="text" id="issuer-url" name="issuer-url"
+					   th:value="${samlProvider.samlSettings.issuerUrl}" required><br>
+
+				<label for="stork-qaa">STORK-QAA-Level</label><br>
+				<select id="stork-qaa" name="stork-qaa">
+					<option th:value="null"></option>
+					<option th:each="qaaLevel : ${T(companyx.ClientServer.model.StorkQaaLevel).values()}"
+							th:value="${qaaLevel.name()}"
+							th:text="${qaaLevel}"
+							th:selected="${qaaLevel.equals(samlProvider.samlSettings.storkQaaLevel)}"></option>
+				</select><br>
+
+				<button type="submit">Update</button>
+			</form>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="de"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+  <head>
+    <title>Client</title>
+  </head>
+  <body>
+
+    <div id="container"
+         style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+
+      <h3 style="margin-left: 50px;">Willkommen bei CompanyX - Ihrem Campus-Management-System</h3>
+      <div id="index" sec:authorize="isAuthenticated()"
+           style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h4>Sie sind bereits angemeldet. Hier gelangen Sie zur Startseite</h4>
+        <form class="form-index" method="get" th:action="@{/index}">
+          <button type="submit">Startseite</button>
+        </form>
+      </div>
+
+      <div id="login" sec:authorize="isAnonymous()"
+           style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h4>Sie müssen sich Anmelden. Hier gelangen Sie zur Anmeldeoberfläche</h4>
+        <form class="form-login" method="post" th:action="@{/oauth2/authorization/ba-client}">
+          <button type="submit">Anmelden</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

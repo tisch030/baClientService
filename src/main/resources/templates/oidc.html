@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="de"
+	  xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="https://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<head>
+		<title>OIDC Overview</title>
+	</head>
+
+	<body sec:authorize="isAuthenticated()">
+
+		<div style="display: flex; align-items: center; justify-content: space-between;">
+			<h3 style="margin-left: 50px;">Willkommen bei CompanyX - Ihrem Campus-Management-System</h3>
+
+			<div style="display: flex;">
+				<a href="/index">Startseite</a>
+				<a href="/identity-provider" style="margin-left: 50px;">IDP Übersicht</a>
+				<a href="/logs" style="margin-left: 50px;">Authentifizierungsprotokoll Übersicht</a>
+			</div>
+
+			<form class="form-logout" method="get" th:action="@{/single-logout}" style="margin-right: 50px;">
+				<button type="submit">Abmelden</button>
+			</form>
+		</div>
+
+
+		<div id="oidc-overview" style="display: flex; justify-content: center;">
+			<div id="idpBasic" style="margin-right: 50px;">
+				<h5>Identity-Provider</h5>
+				<table style=" margin-right: auto; margin-left: auto;">
+					<tbody>
+						<tr>
+							<td>ID</td>
+							<td th:text="${oidcProvider.identityProvider.id}"></td>
+						</tr>
+						<tr>
+							<td>Name</td>
+							<td th:text="${oidcProvider.identityProvider.name}"></td>
+						</tr>
+						<tr>
+							<td>Eindeutiges Zuordnungsattribut</td>
+							<td th:text="${oidcProvider.identityProvider.uniqueIdentifierAttributeAtIdp}"></td>
+						</tr>
+						<tr>
+							<td>Aktiviert</td>
+							<td th:text="${oidcProvider.identityProvider.enabled}"></td>
+						</tr>
+						<tr>
+							<td>Typ</td>
+							<td th:text="${oidcProvider.identityProvider.identityProviderType}"></td>
+						</tr>
+						<tr>
+							<td>Position</td>
+							<td th:text="${oidcProvider.identityProvider.position}"></td>
+						</tr>
+						<tr>
+							<td>Button Text</td>
+							<td th:text="${oidcProvider.identityProvider.buttonLabel}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div id="oidcSettings">
+				<h5>OIDC Settings</h5>
+				<table style=" margin-right: auto; margin-left: auto;">
+					<tbody>
+						<tr>
+							<td>Client-ID</td>
+							<td th:text="${oidcProvider.oidcSettings.clientId}"></td>
+						</tr>
+						<tr>
+							<td>Client-Secret</td>
+							<td th:text="${oidcProvider.oidcSettings.clientSecret}"></td>
+						</tr>
+						<tr>
+							<td>Scopes</td>
+							<td th:text="${#strings.listJoin(oidcProvider.oidcSettings.scopes, ',')}"></td>
+						</tr>
+						<tr>
+							<td>Discovery Mechanismus</td>
+							<td th:text="${oidcProvider.oidcSettings.useDiscovery}"></td>
+						</tr>
+						<tr th:if="${oidcProvider.oidcSettings.useDiscovery}">
+							<td>Issuer-URL</td>
+							<td th:text="${oidcProvider.oidcSettings.issuerUrl}"></td>
+						</tr>
+						<tr th:if="${!oidcProvider.oidcSettings.useDiscovery}">
+							<td>Authorization-URL</td>
+							<td th:text="${oidcProvider.oidcSettings.authorizationUrl}"></td>
+						</tr>
+						<tr th:if="${!oidcProvider.oidcSettings.useDiscovery}">
+							<td>JWKS-URL</td>
+							<td th:text="${oidcProvider.oidcSettings.jwksUrl}"></td>
+						</tr>
+						<tr th:if="${!oidcProvider.oidcSettings.useDiscovery}">
+							<td>Token-URL</td>
+							<td th:text="${oidcProvider.oidcSettings.tokenUrl}"></td>
+						</tr>
+						<tr th:if="${!oidcProvider.oidcSettings.useDiscovery}">
+							<td>User-Info-URL</td>
+							<td th:text="${oidcProvider.oidcSettings.userInfoEndpoint}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<form class="form-update-oidc" method="get"
+			  th:action="@{/identity-provider/oidc/update/} + ${oidcProvider.identityProvider.id}"
+			  style="display: flex; justify-content: center;">
+			<button type="submit">Aktualisieren</button>
+		</form>
+
+	</body>
+	<style>
+        td {
+            padding-right: 55px;
+            padding-bottom: 5px;
+        }
+	</style>
+</html>

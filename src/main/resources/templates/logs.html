@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de"
+	  xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="https://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<head>
+		<title>Logs</title>
+	</head>
+
+	<body sec:authorize="isAuthenticated()">
+
+		<div style="display: flex; align-items: center; justify-content: space-between;">
+			<h3 style="margin-left: 50px;">Willkommen bei CompanyX - Ihrem Campus-Management-System</h3>
+
+			<div style="display: flex;">
+				<a href="/index">Startseite</a>
+				<a href="/identity-provider" style="margin-left: 50px;">Identity-Provider Übersicht</a>
+			</div>
+
+
+			<form class="form-logout" method="get" th:action="@{/single-logout}" style="margin-right: 50px;">
+				<button type="submit">Abmelden</button>
+			</form>
+
+		</div>
+
+		<div id="logs-overview-table" style="text-align: center">
+			<div th:if="${logs}">
+				<h4>Logs:</h4>
+				<table style="border: 1px solid; margin-left: auto; margin-right: auto;">
+					<tbody>
+						<tr>
+							<th>ID</th>
+							<th>Operation</th>
+							<th>IP-Adresse</th>
+							<th>IP-Adresse anonymized</th>
+							<th>Username</th>
+							<th>personId</th>
+							<th>Erstellt</th>
+						</tr>
+						<tr th:each="log : ${logs}">
+							<td th:text="${log.id}"></td>
+							<td th:text="${log.authenticationOperation}"></td>
+							<td th:text="${log.ipAddress}"></td>
+							<td th:text="${log.ipAddressAnonymized}"></td>
+							<td th:text="${log.username}"></td>
+							<td th:text="${log.personId}"></td>
+							<td th:text="${log.createdAt}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</body>
+</html>

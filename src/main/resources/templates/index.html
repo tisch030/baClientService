@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="de"
+	  xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="https://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<head>
+		<title>Client</title>
+	</head>
+
+	<body>
+
+		<div id="homepage-header" style="display: flex; align-items: center; justify-content: space-between;">
+			<h3 style="margin-left: 50px;">Willkommen bei CompanyX - Ihrem Campus-Management-System</h3>
+
+			<form class="form-logout" method="get" th:action="@{/single-logout}" style="margin-right: 50px;"
+				  sec:authorize="isAuthenticated()">
+				<button type="submit">Abmelden</button>
+			</form>
+		</div>
+
+		<div id="unauthenticated-information" sec:authorize="isAnonymous()" style="text-align: center">
+			<span>Bitte anmelden.</span>
+		</div>
+
+		<div id="authenticated-information" sec:authorize="isAuthenticated()" style="text-align: center">
+			Wilkommen zurück <span th:text="${username}"></span>
+			<br> <br>
+			Deine Veranstaltungen sind: <span th:text="${activities}"></span>
+			<br>
+			Deine Module sind: <span th:text="${modules}"></span>
+
+			<ul style="list-style-type: none;">
+				<li><a href="/logs">Authentifizierungsprotokoll Übersicht</a></li>
+				<li><a href="/identity-provider">Identity-Provider Übersicht</a></li>
+			</ul>
+		</div>
+
+	</body>
+</html>

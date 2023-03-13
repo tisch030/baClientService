@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="de"
+	  xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="https://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<head>
+		<title>Saml Create</title>
+	</head>
+
+	<body sec:authorize="isAuthenticated()">
+
+
+		<div style="display: flex; align-items: center; justify-content: space-between;">
+			<h3 style="margin-left: 50px;">Willkommen bei CompanyX - Ihrem Campus-Management-System</h3>
+
+			<div style="display: flex;">
+				<a href="/index">Startseite</a>
+				<a href="/identity-provider" style="margin-left: 50px;">IDP Übersicht</a>
+				<a href="/logs" style="margin-left: 50px;">Authentifizierungsprotokoll Übersicht</a>
+			</div>
+
+			<form class="form-logout" method="get" th:action="@{/single-logout}" style="margin-right: 50px;">
+				<button type="submit">Abmelden</button>
+			</form>
+		</div>
+
+		<div style="display: flex; align-items: center; flex-direction: column;">
+			<h5>Saml Identity-Provider</h5>
+
+			<div id="errors"
+				 style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+				<span th:text="${error}" style="color: red; font-size: larger;"></span>
+				<span th:if="${error}" style="color: red; font-size: larger;">No updates executed!</span>
+			</div>
+
+			<form id="form-saml-create" method="post"
+				  th:action="@{/identity-provider/saml/create}">
+
+				<label for="name">Identity Provider Name</label><br>
+				<input type="text" id="name" name="name" required><br>
+
+				<label for="unique-attribute">Eindeutiges Zuordnungsattribut</label><br>
+				<input type="text" id="unique-attribute" name="unique-attribute" required><br>
+
+				<label for="position">Position</label><br>
+				<input type="number" id="position" name="position" required><br>
+
+				<label for="button-text">Button Text</label><br>
+				<input type="text" id="button-text" name="button-text" required><br>
+
+				<label for="issuer-url">Issuer-URL</label><br>
+				<input type="text" id="issuer-url" name="issuer-url" required><br>
+
+				<label for="stork-qaa">STORK-QAA-Level</label><br>
+				<select id="stork-qaa" name="stork-qaa">
+					<option th:value="null"></option>
+					<option th:each="qaaLevel : ${T(companyx.ClientServer.model.StorkQaaLevel).values()}"
+							th:value="${qaaLevel.name()}"
+							th:text="${qaaLevel}"></option>
+				</select><br>
+
+				<button type="submit">Erstellen</button>
+			</form>
+		</div>
+
+	</body>
+</html>

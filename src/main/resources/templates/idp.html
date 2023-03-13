@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="de"
+	  xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="https://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+	<head>
+		<title>Identity-Provider</title>
+	</head>
+
+	<body sec:authorize="isAuthenticated()">
+
+		<div id="homepage-header" style="display: flex; align-items: center; justify-content: space-between;">
+			<h3 style="margin-left: 50px;">Willkommen bei CompanyX - Ihrem Campus-Management-System</h3>
+
+			<div style="display: flex;">
+				<a href="/index">Startseite</a>
+				<a href="/logs" style="margin-left: 50px;">Authentifizierungsprotokoll Übersicht</a>
+			</div>
+
+			<form class="form-logout" method="get" th:action="@{/single-logout}" style="margin-right: 50px;">
+				<button type="submit">Abmelden</button>
+			</form>
+		</div>
+
+		<div id="authenticated-container" style="text-align: center">
+
+			<div id="idp-overview-table" th:if="${idps}">
+
+				<h4>Identity-Providers:</h4>
+
+				<table style="border: 1px solid; margin-right: auto; margin-left: auto;">
+					<tbody>
+						<tr>
+							<th>ID</th>
+							<th>Name</th>
+							<th>Enabled</th>
+							<th>Type</th>
+							<th>Position</th>
+							<th>Aktion</th>
+						</tr>
+						<tr th:each="idp : ${idps}">
+							<td th:text="${idp.id}"></td>
+							<td th:text="${idp.name}"></td>
+							<td th:text="${idp.enabled}"></td>
+							<td th:text="${idp.identityProviderType}"></td>
+							<td th:text="${idp.position}"></td>
+							<td>
+								<div style="display: flex">
+									<form class="form-overview-oidc" method="get"
+										  th:if="${idp.identityProviderType.toString() == 'OPENID_CONNECT'}"
+										  th:action="@{/identity-provider/oidc/} + ${idp.id}">
+										<input type="hidden" name="type" th:value="${idp.identityProviderType}">
+										<button type="submit">Übersicht</button>
+									</form>
+									<form class="form-overview-saml" method="get"
+										  th:if="${idp.identityProviderType.toString() == 'SAML'}"
+										  th:action="@{/identity-provider/saml/} + ${idp.id}">
+										<input type="hidden" name="type" th:value="${idp.identityProviderType}">
+										<button type="submit">Übersicht</button>
+									</form>
+									<form class="form-update" method="post"
+										  th:action="@{/identity-provider/} + ${idp.id}">
+										<input type="hidden" name="status" th:value="${idp.enabled}">
+										<button type="submit">Status Update</button>
+									</form>
+									<form class="form-delete" method="post"
+										  th:action="@{/identity-provider/} + ${idp.id}">
+										<button type="submit">Löschen</button>
+									</form>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div id="idp-create-buttons" style="display: flex; justify-content: center;">
+
+				<form class="form-oidc-create" method="get" th:action="@{/identity-provider/oidc/create}"
+					  style="margin-right: 50px;">
+					<button type="submit">OIDC Provider erstellen</button>
+				</form>
+
+				<form class="form-saml-create" method="get" th:action="@{/identity-provider/saml/create}"
+					  style="margin-right: 50px;">
+					<button type="submit">SAML Provider erstellen</button>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>
